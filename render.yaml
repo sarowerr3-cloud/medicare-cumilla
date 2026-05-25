@@ -1,0 +1,38 @@
+services:
+  # 1. Backend API
+  - type: web
+    name: medicare-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - fromContext: MONGODB_URI
+      - fromContext: CLERK_PUBLISHABLE_KEY
+      - fromContext: CLERK_SECRET_KEY
+      - fromContext: AAMARPAY_STORE_ID
+      - fromContext: AAMARPAY_SIGNATURE_KEY
+
+  # 2. Frontend Website
+  - type: static
+    name: medicare-frontend
+    env: static
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://medicare-backend-6eww.onrender.com
+
+  # 3. Admin Dashboard
+  - type: static
+    name: medicare-admin
+    env: static
+    buildCommand: npm install && npm run build
+    publishDir: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://medicare-backend-6eww.onrender.com
